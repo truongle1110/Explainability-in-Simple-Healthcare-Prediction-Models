@@ -1,0 +1,27 @@
+# ============================================================
+# Requirements — diabetes_analysis.ipynb
+# Bài toán: XAI / Data Preprocessing — Diabetes Dataset
+# Python >= 3.9
+# Cài đặt: pip install -r requirements.txt
+# ============================================================
+
+# --- Core Data Science ---
+pandas>=2.0.0
+numpy>=1.24.0
+
+# --- Visualization ---
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# --- Machine Learning & Preprocessing ---
+scikit-learn>=1.3.0
+
+# --- Jupyter Notebook ---
+notebook>=7.0.0
+ipykernel>=6.0.0
+
+# --- [Optional] XAI Libraries (Section 10) ---
+# Bỏ comment để cài khi chạy phần XAI
+# shap>=0.44.0
+# lime>=0.2.0
+# xgboost>=2.0.0
