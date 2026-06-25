@@ -179,7 +179,7 @@ jupyter notebook diabetes_analysis.ipynb
 5. Feature Engineering
 6. Feature Scaling
 7. Export cleaned data
-8. [Đề xuất] Kiểm tra lại sau xử lý
+8. Kiểm tra lại sau xử lý
 ```
 
 ---
