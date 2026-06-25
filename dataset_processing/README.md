@@ -11,20 +11,32 @@
 
 ## 🏷️ Mô Tả Các Đặc Trưng (Features)
 
-| STT | Tên Cột | Kiểu | Đơn Vị | Mô Tả |
-|-----|---------|------|---------|-------|
-| 1 | `Pregnancies` | int | lần | Số lần mang thai |
-| 2 | `Glucose` | int | mg/dL | Nồng độ glucose huyết tương sau 2 giờ trong xét nghiệm dung nạp glucose đường uống |
-| 3 | `BloodPressure` | int | mmHg | Huyết áp tâm trương |
-| 4 | `SkinThickness` | int | mm | Độ dày nếp gấp da cơ tam đầu |
-| 5 | `Insulin` | int | mu U/ml | Nồng độ insulin huyết thanh 2 giờ |
-| 6 | `BMI` | float | kg/m² | Chỉ số khối cơ thể (Cân nặng / Chiều cao²) |
-| 7 | `DiabetesPedigreeFunction` | float | — | Hàm phả hệ tiểu đường (điểm di truyền từ tiền sử gia đình) |
-| 8 | `Age` | int | năm | Tuổi |
-| 9 | **`Outcome`** | int | 0/1 | **Biến mục tiêu**: 1 = mắc tiểu đường, 0 = không mắc |
+| Feature | Kiểu | Đơn vị | Mô tả | Cụ thể |
+|---------|------|--------|-------|-------|
+| `Pregnancies` | int | lần | Số lần mang thai ||
+| `Glucose` | int | mg/dL | Đường huyết ||
+| `BloodPressure` | int | mmHg | Huyết áp ||
+| `SkinThickness` | int | mm |  Độ dày nếp gấp da |Thường dùng để đo lượng mỡ dưới da.|
+| `Insulin` | int | mu U/ml | Nồng độ insulin huyết thanh |Hormone điều hòa lượng đường trong máu do tuyến tụy tiết ra. Dữ liệu này giúp đánh giá xem cơ thể có sản xuất đủ hoặc kháng insulin hay không|
+| `BMI` | float | kg/m² | Chỉ số khối cơ thể |Đánh giá tình trạng béo phì, một trong những yếu tố nguy cơ hàng đầu|
+| `DiabetesPedigreeFunction` | float | — | Di truyền | Chỉ số cho thấy tiền sử gia đình mắc bệnh tiểu đường|
+| `Age` | int | năm | Tuổi ||
+| **`Outcome`** | int | 0/1 | **Target**: 1 = tiểu đường, 0 = không ||
 
 ---
+## Feature Units — Diabetes Dataset
 
+| Feature | Đơn vị | Giải thích đơn vị |
+|---------|--------|-------------------|
+| Pregnancies | count (lần) | Số nguyên đếm số lần mang thai. Không có đơn vị đo lường. |
+| Glucose | mg/dL | Milligram per deciliter — lượng glucose (mg) trong 100ml máu. Càng cao → đường huyết càng cao. |
+| BloodPressure | mmHg | Millimeter of mercury — chiều cao cột thủy ngân bị đẩy lên bởi áp lực máu. Đơn vị chuẩn quốc tế đo huyết áp. |
+| SkinThickness | mm | Millimet — độ dày vật lý của nếp gấp da đo bằng thước kẹp. |
+| Insulin | μIU/mL | Micro International Units per milliliter — lượng insulin (tính theo đơn vị sinh học quốc tế) trong 1ml huyết thanh. |
+| BMI | kg/m² | Kilogram per square meter — cân nặng (kg) chia bình phương chiều cao (m). Ví dụ: 70kg / 1.7² = 24.2 kg/m². |
+| DiabetesPedigreeFunction | score | Điểm tổng hợp không có đơn vị vật lý — được tính từ tiền sử gia đình mắc ĐTĐ. Càng cao → nguy cơ di truyền càng lớn. |
+| Age | năm (years) | Tuổi tính bằng năm. |
+---
 ## 📊 Thống Kê Mô Tả
 
 | Feature | Min | Mean | Median | Max | Std |
@@ -60,6 +72,19 @@ Trong các đặc trưng y tế, giá trị `0` là **không thể xảy ra về
 
 > ⚠️ `Pregnancies = 0` là hợp lệ (chưa từng mang thai), không cần xử lý.
 
+### *Có thể bạn đã biết?*
+
+Tại Sao 5% là Ngưỡng MEDIUM?
+
+Nguồn gốc từ Rubin (1987) — cha đẻ của lý thuyết missing data:
+>Nếu tỷ lệ missing < 5%, hầu hết phương pháp imputation đơn giản (mean, median) đều cho kết quả chấp nhận được vì lượng thông tin mất đi quá nhỏ để ảnh hưởng đáng kể đến model.
+>Nói đơn giản: mất 5% dữ liệu giống như thiếu 4 trang trong cuốn sách 80 trang — vẫn hiểu được nội dung.
+
+Tại Sao 20% là Ngưỡng HIGH?
+
+Từ nghiên cứu thực nghiệm của Schafer & Graham (2002):
+>Khi missing > 20%, các phương pháp đơn giản bắt đầu tạo ra bias đáng kể. Cần dùng phương pháp nâng cao hơn (KNN, Multiple Imputation...).
+>Mất 20% dữ liệu giống như thiếu 16 trang trong cuốn sách 80 trang — bắt đầu ảnh hưởng đến việc hiểu nội dung.
 ---
 
 ## 🛠️ Chiến Lược Xử Lý Dữ Liệu
@@ -80,6 +105,12 @@ Chiến lược được chọn theo tỷ lệ missing:
 
 ### Bước 3 — Xử Lý Outlier
 Dùng **IQR method** để phát hiện và winsorize (clip) outlier thay vì xóa (giữ nguyên số lượng mẫu).
+
+### *Có thể bạn đã biết?*
+
+> IQR Rule = dùng Q1 và Q3 để xác định ngưỡng an toàn của dữ liệu. Giá trị nằm ngoài [Q1 - 1.5×IQR, Q3 + 1.5×IQR] bị coi là outlier.
+>
+> Winsorize/Clip = không xóa outlier mà kéo nó về đúng ngưỡng biên — giữ nguyên số mẫu, đồng thời loại bỏ ảnh hưởng cực đoan của giá trị bất thường.
 
 ### Bước 4 — Feature Scaling
 Dùng **StandardScaler** (Z-score normalization) — phù hợp cho các model ML và XAI methods (SHAP, LIME).
@@ -115,16 +146,17 @@ Explainability-in-Simple-Healthcare-Prediction-Models/
 ```bash
 git clone https://github.com/<your-username>/Explainability-in-Simple-Healthcare-Prediction-Models.git
 cd Explainability-in-Simple-Healthcare-Prediction-Models
+cd dataset_processing
 ```
 
 **2. Cài đặt thư viện**
 ```bash
-pip install -r notebook/requirements.txt
+pip install -r requirements.txt
 ```
 
 **3. Chạy notebook**
 ```bash
-jupyter notebook notebook/diabetes_analysis.ipynb
+jupyter notebook diabetes_analysis.ipynb
 ```
 
 ---
