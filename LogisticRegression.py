@@ -10,6 +10,7 @@ from sklearn.model_selection import GridSearchCV
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from shap_explainability import apply_shap
 
 data = pd.read_csv('dataset/diabetes.csv')
 
@@ -30,6 +31,18 @@ for i,j in zip(y_predict, y_test):
     print("Predict: {}. Actual: {}".format(i,j))
 print(classification_report(y_test, y_predict))
 print(confusion_matrix(y_test, y_predict))
+
+# Optional SHAP explainability for the positive diabetes class.
+# Uncomment after installing shap from dataset_processing/requirements.txt.
+# shap_result = apply_shap(
+#     model,
+#     x_train,
+#     x_test,
+#     feature_names=x.columns,
+#     output_dir='shap_outputs/logistic_regression',
+#     plot_name='logistic_regression',
+# )
+# print(shap_result['feature_importance'])
 
 cm = np.array(confusion_matrix(y_test, y_predict))
 confusion = pd.DataFrame(cm, index=['negative','positive'], columns=['negative','positive'])

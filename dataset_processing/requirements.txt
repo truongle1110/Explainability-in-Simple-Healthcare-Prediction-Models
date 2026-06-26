@@ -22,6 +22,6 @@ ipykernel>=6.0.0
 
 # --- [Optional] XAI Libraries (Section 10) ---
 # Bỏ comment để cài khi chạy phần XAI
-# shap>=0.44.0
+shap>=0.44.0
 # lime>=0.2.0
 # xgboost>=2.0.0
