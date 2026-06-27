@@ -11,7 +11,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
-data = pd.read_csv('dataset/diabetes_scaled.csv')
+data = pd.read_csv('dataset/diabetes.csv')
 # profile = ProfileReport(data, title='Diabetes Report',explorative=True)
 # profile.to_file('report.html')
 print(data)
@@ -30,19 +30,17 @@ params = {
     'n_estimators': [50, 100, 200],
     'criterion': ['gini', 'entropy','log_loss'],
     'max_depth': [None, 2, 5],
-    'min_samples_split': [2, 5, 10],
-    'class_weight': [None, 'balanced', 'balanced_subsample']
+    'min_samples_split': [2, 5, 10]
 }
 
 #model
 # model = RandomForestClassifier(n_estimators=100, criterion='gini', random_state=100)
-model = GridSearchCV(RandomForestClassifier(random_state = 100), param_grid=params, scoring='recall_weighted',cv=6, verbose=2, n_jobs = -1)
+model = GridSearchCV(RandomForestClassifier(random_state = 100), param_grid=params, scoring='precision',cv=6, verbose=2, n_jobs = 6)
 model.fit(x_train, y_train)
 print(model.best_score_)
 print(model.best_params_)
 
-best_model = model.best_estimator_
-y_predict = best_model.predict(x_test)
+y_predict = model.predict(x_test)
 for i,j in zip(y_predict, y_test):
     print("Predict: {}. Actual: {}".format(i,j))
 print(classification_report(y_test, y_predict))
@@ -51,17 +49,4 @@ print(confusion_matrix(y_test, y_predict))
 cm = np.array(confusion_matrix(y_test, y_predict))
 confusion = pd.DataFrame(cm, index=['negative','positive'], columns=['negative','positive'])
 sns.heatmap(confusion, annot=True)
-plt.show()
-
-# Feature Importance
-importances = pd.Series(best_model.feature_importances_, index=x.columns).sort_values(ascending=True)
-fig, ax = plt.subplots(figsize=(10, 6))
-colors = ['#e74c3c' if v > importances.mean() else '#3498db' for v in importances.values]
-importances.plot(kind='barh', ax=ax, color=colors, alpha=0.85)
-ax.axvline(importances.mean(), color='gray', linestyle='--', alpha=0.8, label='Mean importance')
-ax.set_title('Feature Importance — Random Forest\n(Baseline for XAI)', fontweight='bold', fontsize=13)
-ax.set_xlabel('Importance Score')
-ax.legend()
-plt.tight_layout()
-# plt.savefig('./analysis_diagram/feature_importance_rf.png', dpi=150, bbox_inches='tight')
 plt.show()
